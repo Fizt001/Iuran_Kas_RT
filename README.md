@@ -69,10 +69,11 @@ npm run dev
 ```
 
 ### 📸 Tampilan Dashboard
-![alt text](image.png)
-![alt text](image-1.png)
-![alt text](image-2.png)
-![alt text](image-3.png)
+![Dashboard Admin](public/img/screenshots/image.png)
+![Dashboard Admin](public/img/screenshots/image-1.png)
+![Dashboard Admin](public/img/screenshots/image-2.png)
+![Dashboard Admin](public/img/screenshots/image-3.png)
+
 
 👤 Author
 Hafis (Fizt001) - Lead Developer
