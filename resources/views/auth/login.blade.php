@@ -2,8 +2,8 @@
     <div class="w-full sm:max-w-md mt-6 px-8 py-10 bg-white shadow-2xl overflow-hidden sm:rounded-2xl border border-gray-100">
         
         <div class="flex flex-col items-center mb-8">
-            <img src="{{ asset('img/logo-rt.jpg') }}" class="w-28 h-28 object-contain mb-4" alt="Logo RT">
-            <h2 class="text-2xl font-extrabold text-gray-800">Sistem Kas RT</h2>
+            <img src="{{ asset('img/logo-rt.png') }}" class="w-28 h-28 object-contain mb-4" alt="Logo RT">
+            <h2 class="text-2xl font-extrabold text-gray-800">Iuran Kas RT</h2>
             <p class="text-sm text-gray-500">Silakan masuk ke akun Anda</p>
         </div>
 
