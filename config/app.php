@@ -123,4 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'rt_identity' => env('RT_IDENTITY', 'RT Default'),
 ];
