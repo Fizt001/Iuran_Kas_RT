@@ -1,46 +1,60 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\ResidentController;
+use App\Http\Controllers\Admin\ContributionController;
+use App\Http\Controllers\Warga\PaymentController as WargaPaymentController;
+use App\Http\Controllers\Bendahara\PaymentVerificationController;
+use App\Http\Controllers\Bendahara\ReportController;
 
-// Halaman depan (Landing Page)
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', function () { return view('welcome'); });
 
-// GROUP ROUTE: Hanya untuk user yang sudah LOGIN
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // 1. ROLE: ADMIN
+    // --- DASHBOARD ROUTE (Semua role panggil controller yang sama) ---
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // --- ROLE: ADMIN ---
     Route::middleware(['role:admin'])->group(function () {
-        Route::get('/admin/dashboard', function () {
-            return view('dashboard'); 
-        })->name('admin.dashboard');
+        Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         
-        // Tambahkan route khusus admin lainnya di sini nanti
+        Route::get('/admin/residents', [ResidentController::class, 'residentindex'])->name('admin.residents.index');
+        Route::post('/admin/residents', [ResidentController::class, 'residentstore'])->name('admin.residents.store');
+        Route::put('/admin/residents/{id}', [ResidentController::class, 'residentupdate'])->name('admin.residents.update');
+        Route::delete('/admin/residents/{id}', [ResidentController::class, 'residentdestroy'])->name('admin.residents.destroy');
+        
+        Route::resource('/admin/contributions', ContributionController::class)->names('admin.contributions');
     });
 
-    // 2. ROLE: BENDAHARA
+    // --- ROLE: BENDAHARA ---
     Route::middleware(['role:bendahara'])->group(function () {
-        Route::get('/bendahara/dashboard', function () {
-            return view('dashboard');
-        })->name('bendahara.dashboard');
-
-        // Tambahkan route khusus bendahara (input iuran, dll) di sini
+        Route::get('/bendahara/dashboard', [DashboardController::class, 'index'])->name('bendahara.dashboard');
+        Route::get('/bendahara/verifikasi', [PaymentVerificationController::class, 'index'])->name('bendahara.verification.index');
+        Route::patch('/bendahara/verifikasi/{id}', [PaymentVerificationController::class, 'updateStatus'])->name('bendahara.verification.update');
+        Route::get('/bendahara/laporan', [ReportController::class, 'index'])->name('bendahara.reports.index');
     });
 
-    // 3. ROLE: WARGA (Default Dashboard)
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    // --- ROLE: WARGA ---
+    Route::middleware(['role:warga'])->group(function () {
+        Route::get('/warga/pembayaran', [WargaPaymentController::class, 'index'])->name('warga.payments.index');
+        Route::post('/warga/pembayaran', [WargaPaymentController::class, 'store'])->name('warga.payments.store');
+    });
 
-    // 4. SETTING PROFIL (Bisa diakses SEMUA role yang login)
+    // --- GLOBAL ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/warga/profil', [ProfileController::class, 'wargaEdit'])->name('warga.profile.edit');
+    Route::put('/warga/profil', [ProfileController::class, 'wargaUpdate'])->name('warga.profile.update');
+    Route::get('/complete-profile', [ProfileController::class, 'complete'])->name('profile.complete');
+    Route::post('/complete-profile', [ProfileController::class, 'storeProfile'])->name('profile.store');
 });
 
+// 3. LOGOUT & AUTH
 Route::get('/logged-out', function () {
     return view('auth.logged-out');
 })->name('logged-out');
+
 require __DIR__.'/auth.php';
